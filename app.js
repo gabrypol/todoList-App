@@ -18,13 +18,16 @@ function loadEventListeners() {
 // Add Task
 function addTask(e) {
     if(taskInput.value === '') {
+        // If the input field is empty show the alert...
         alert('Add a task');
+        // ... and prevent from an empty task being added to the list
+        return;
     } 
 
     // Create a list element using the tagname li
     const listElement = document.createElement('li');
     // 'collection-item' class is for Materialize
-    listElement.className = 'collection-item';
+    listElement.className = 'collection-item blue lighten-4';
 
     // Create text node and append it to listElement
     listElement.appendChild(document.createTextNode(taskInput.value));
@@ -33,7 +36,7 @@ function addTask(e) {
     // Style it (with Materialize)
     link.className = 'delete-item secondary-content';
     // Add 'X - Delete' icon
-    link.innerHTML = '<i class="fa fa-remove"></i>'
+    link.innerHTML = '<i class="fa fa-remove black-text"></i>'
     // Append the link (the icon) to listElement
     listElement.appendChild(link);
     
@@ -42,6 +45,9 @@ function addTask(e) {
     // Clear the input field
     taskInput.value = '';
 
+    // Eneable 'CLEAR TASKS' button, which was originally disabled
+    clearButton.classList.remove('disabled');
+
     e.preventDefault();
 }
 
@@ -49,15 +55,26 @@ function addTask(e) {
 function removeTask(e) {
     // When clicking on the 'x' (the icon <i></i>), delete the parent of the parent (the relative list item)
     if(e.target.parentElement.classList.contains('delete-item')) {
-        if(confirm('Do you really want to delete this task?')) {
+        // Ask confirmation
+        if(confirm('Do you want to delete this task?')) {
             e.target.parentElement.parentElement.remove();
         }
+    }
+    // If there are no tasks on the list, disable the button 'CLEAR TASKS'
+    if(taskList.childElementCount == 0) {
+        clearButton.classList.add('disabled');
     }
 }
 
 // Clear all tasks
 function clearAllTasks() {
-    taskList.innerHTML = '';
+    if(confirm('Do you really want to delete all your tasks?')) {
+        // Remove the whole 'ul'
+        taskList.innerHTML = '';
+
+        // Disable 'CLEAR TASKS' button, which has been enabled while inserting tasks
+        clearButton.classList.add('disabled');
+    } 
 }
 
 // Filter tasks
