@@ -2,8 +2,16 @@
 const taskInput = document.querySelector('#task');
 const addTaskButton = document.querySelector('#task-form');
 const filter = document.querySelector('#filter');
+const taskTitle = document.querySelector('#task-title');
+const taskOriginalTitleText = taskTitle.textContent;
 const taskList = document.querySelector('.collection');
 const clearButton = document.querySelector('.clear-tasks');
+
+// Update the task counter. I cant' use const here, because the variable is re-assigned each time the function updateTaskCounter() is called
+let taskCounter = 0;
+function updateTaskCounter() {
+    taskCounter = taskList.childElementCount;
+}
 
 // Load all event listeners
 loadEventListeners();
@@ -42,8 +50,14 @@ function addTask(e) {
     
     // Append listElement to taskList
     taskList.appendChild(listElement);
-    // Clear the input field
+    // Clear the input text field
     taskInput.value = '';
+
+    // Update the global variable taskCounter
+    updateTaskCounter();
+
+    // Update the header 'h5'. If in 'taskTitle' there is more than one task, add an 's' to the word 'Task' in h5
+    taskTitle.textContent = `${taskCounter} Task${taskCounter == 1 ? '' : 's'}:`;
 
     // Eneable 'CLEAR TASKS' button, which was originally disabled
     clearButton.classList.remove('disabled');
@@ -58,6 +72,17 @@ function removeTask(e) {
         // Ask confirmation
         if(confirm('Do you want to delete this task?')) {
             e.target.parentElement.parentElement.remove();
+
+            // Update the global variable taskCounter
+            updateTaskCounter();
+            console.log(taskCounter)
+
+            // Update the header 'h5'. If there are no tasks left, restore taskTitle to the original text. If there are more than one task, add an 's' to the word 'Task' in h5
+            if (taskCounter == 0) {
+                taskTitle.textContent = taskOriginalTitleText;
+            } else {
+                taskTitle.textContent = `${taskCounter} Task${taskCounter == 1 ? '' : 's'}:`;
+            }
         }
     }
     // If there are no tasks on the list, disable the button 'CLEAR TASKS'
@@ -71,6 +96,12 @@ function clearAllTasks() {
     if(confirm('Do you really want to delete all your tasks?')) {
         // Remove the whole 'ul'
         taskList.innerHTML = '';
+
+        // Update the global variable taskCounter
+        updateTaskCounter();
+
+        // Restore taskTitle to the original text
+        taskTitle.textContent = taskOriginalTitleText;
 
         // Disable 'CLEAR TASKS' button, which has been enabled while inserting tasks
         clearButton.classList.add('disabled');
