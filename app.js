@@ -17,11 +17,48 @@ function updateTaskCounter() {
 loadEventListeners();
 
 function loadEventListeners() {
+    // When DOM loads, call the function 'getTasks'
+    document.addEventListener('DOMContentLoaded', getTasks);
     addTaskButton.addEventListener('submit', addTask);
     taskList.addEventListener('click', removeTask);
     clearButton.addEventListener('click', clearAllTasks);
     filter.addEventListener('keyup', filterTasks);
 }
+
+// Load tasks from local storage
+function getTasks() {
+    let tasks;
+    if(localStorage.getItem('tasks') === null) {
+        tasks = [];
+    } else {
+        tasks = JSON.parse(localStorage.getItem('tasks'));
+    }
+
+    tasks.forEach(function(task) {
+        // Create a list element using the tagname li
+        const listElement = document.createElement('li');
+        // 'collection-item' class is for Materialize
+        listElement.className = 'collection-item blue lighten-4';
+
+        // Create text node and append it to listElement
+        listElement.appendChild(document.createTextNode(task));
+        // Create link element ('a')
+        const link = document.createElement('a');
+        // Style it (with Materialize)
+        link.className = 'delete-item secondary-content';
+        // Add 'X - Delete' icon
+        link.innerHTML = '<i class="fa fa-remove black-text"></i>'
+        // Append the link (the icon) to listElement
+        listElement.appendChild(link);
+        
+        // Append listElement to taskList
+        taskList.appendChild(listElement);
+
+        // Enable 'CLEAR TASKS' button, which was originally disabled
+        clearButton.classList.remove('disabled'); 
+    });
+}
+
 
 // Add Task
 function addTask(e) {
@@ -49,6 +86,10 @@ function addTask(e) {
         
         // Append listElement to taskList
         taskList.appendChild(listElement);
+
+        // Store task in local storage
+        storeTaskInLocalStorage(taskInput.value);
+
         // Clear the input text field
         taskInput.value = '';
 
@@ -64,6 +105,20 @@ function addTask(e) {
     e.preventDefault();
 }
 
+// Store task in local storage
+function storeTaskInLocalStorage(task) {
+
+    let tasks;
+    if (localStorage.getItem('tasks') === null) {
+        tasks = [];
+    } else {
+        tasks = JSON.parse(localStorage.getItem('tasks'));
+    }
+    tasks.push(task);
+
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
 // Clear one task
 function removeTask(e) {
     // When clicking on the 'x' (the icon <i></i>), delete the parent of the parent (the relative list item)
@@ -71,6 +126,9 @@ function removeTask(e) {
         // Ask confirmation
         if(confirm('Do you want to delete this task?')) {
             e.target.parentElement.parentElement.remove();
+
+            // Remove the task from local storage
+                removeTaskFromLocalStorage(e.target.parentElement.parentElement);
 
             // Update the global variable taskCounter
             updateTaskCounter();
@@ -89,11 +147,30 @@ function removeTask(e) {
     }
 }
 
+function removeTaskFromLocalStorage(taskItem) {
+    if(localStorage.getItem('tasks') === null) {
+        let tasks = [];
+    } else {
+        tasks = JSON.parse(localStorage.getItem('tasks'));
+    }
+
+    tasks.forEach(function(task, index) {
+        if(taskItem.textContent === task) {
+            tasks.splice(index, 1);
+        }
+    });
+
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
 // Clear all tasks
 function clearAllTasks() {
     if(confirm('Do you really want to delete all your tasks?')) {
         // Remove the whole 'ul'
         taskList.innerHTML = '';
+
+        // Clear from local storage
+        clearAllTasksFromLocalStorage();
 
         // Update the global variable taskCounter
         updateTaskCounter();
@@ -104,6 +181,11 @@ function clearAllTasks() {
         // Disable 'CLEAR TASKS' button, which has been enabled while inserting tasks
         clearButton.classList.add('disabled');
     } 
+}
+
+// Clear all tasks from local storage
+function clearAllTasksFromLocalStorage() {
+    localStorage.clear();
 }
 
 // Filter tasks
