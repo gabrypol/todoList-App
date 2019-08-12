@@ -7,7 +7,7 @@ const taskOriginalTitleText = taskTitle.textContent;
 const taskList = document.querySelector('.collection');
 const clearButton = document.querySelector('.clear-tasks');
 
-// Update the task counter. I cant' use const here, because the variable is re-assigned each time the function updateTaskCounter() is called
+// Update the task counter. const can't be used here, because the variable is re-assigned each time the function updateTaskCounter() is called
 let taskCounter = 0;
 function updateTaskCounter() {
     taskCounter = taskList.childElementCount;
@@ -27,41 +27,40 @@ function loadEventListeners() {
 function addTask(e) {
     if(taskInput.value === '') {
         // If the input field is empty show the alert...
-        alert('Add a task');
+        alert('Please add a task.');
         // ... and prevent from an empty task being added to the list
-        return;
-    } 
+        
+    } else {
+        // Create a list element using the tagname li
+        const listElement = document.createElement('li');
+        // 'collection-item' class is for Materialize
+        listElement.className = 'collection-item blue lighten-4';
 
-    // Create a list element using the tagname li
-    const listElement = document.createElement('li');
-    // 'collection-item' class is for Materialize
-    listElement.className = 'collection-item blue lighten-4';
+        // Create text node and append it to listElement
+        listElement.appendChild(document.createTextNode(taskInput.value));
+        // Create link element ('a')
+        const link = document.createElement('a');
+        // Style it (with Materialize)
+        link.className = 'delete-item secondary-content';
+        // Add 'X - Delete' icon
+        link.innerHTML = '<i class="fa fa-remove black-text"></i>'
+        // Append the link (the icon) to listElement
+        listElement.appendChild(link);
+        
+        // Append listElement to taskList
+        taskList.appendChild(listElement);
+        // Clear the input text field
+        taskInput.value = '';
 
-    // Create text node and append it to listElement
-    listElement.appendChild(document.createTextNode(taskInput.value));
-    // Create link element ('a')
-    const link = document.createElement('a');
-    // Style it (with Materialize)
-    link.className = 'delete-item secondary-content';
-    // Add 'X - Delete' icon
-    link.innerHTML = '<i class="fa fa-remove black-text"></i>'
-    // Append the link (the icon) to listElement
-    listElement.appendChild(link);
-    
-    // Append listElement to taskList
-    taskList.appendChild(listElement);
-    // Clear the input text field
-    taskInput.value = '';
+        // Update the global variable taskCounter
+        updateTaskCounter();
 
-    // Update the global variable taskCounter
-    updateTaskCounter();
+        // Update the header 'h5'. If in 'taskTitle' there is more than one task, add an 's' to the word 'Task' in h5
+        taskTitle.textContent = `${taskCounter} Task${taskCounter == 1 ? '' : 's'}:`;
 
-    // Update the header 'h5'. If in 'taskTitle' there is more than one task, add an 's' to the word 'Task' in h5
-    taskTitle.textContent = `${taskCounter} Task${taskCounter == 1 ? '' : 's'}:`;
-
-    // Eneable 'CLEAR TASKS' button, which was originally disabled
-    clearButton.classList.remove('disabled');
-
+        // Enable 'CLEAR TASKS' button, which was originally disabled
+        clearButton.classList.remove('disabled'); 
+    }
     e.preventDefault();
 }
 
@@ -75,7 +74,6 @@ function removeTask(e) {
 
             // Update the global variable taskCounter
             updateTaskCounter();
-            console.log(taskCounter)
 
             // Update the header 'h5'. If there are no tasks left, restore taskTitle to the original text. If there are more than one task, add an 's' to the word 'Task' in h5
             if (taskCounter == 0) {
