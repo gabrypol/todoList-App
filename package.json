@@ -4,7 +4,7 @@
   "description": "1. Download the repository's ZIP file and unzip it. 2. Open 'index.html' with your browser.",
   "main": "index.js",
   "scripts": {
-    "test": "gh-pages -d public"
+    "deploy": "gh-pages -d public"
   },
   "repository": {
     "type": "git",
