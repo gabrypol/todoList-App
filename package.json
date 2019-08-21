@@ -1,14 +1,20 @@
 {
   "name": "todolist",
   "version": "1.0.0",
-  "description": "",
+  "description": "1. Download the repository's ZIP file and unzip it. 2. Open 'index.html' with your browser.",
   "main": "index.js",
   "scripts": {
-    "deploy": "gh-pages -d public"
+    "test": "gh-pages -d public"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabrypol/todoList-App.git"
+  },
   "author": "Gabriele Polenta",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gabrypol/todoList-App/issues"
+  },
   "homepage": "https://gabrypol.github.io/todoList-App",
   "dependencies": {
     "gh-pages": "^2.1.1"
