@@ -1,0 +1,16 @@
+{
+  "name": "todoList",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "gh-pages -d public"
+  },
+  "keywords": [],
+  "author": "Gabriele Polenta",
+  "license": "ISC",
+  "homepage": "https://github.com/gabrypol/todoList-App",
+  "dependencies": {
+    "gh-pages": "^2.1.1"
+  }
+}
